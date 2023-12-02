@@ -1,5 +1,4 @@
 import datetime
-
 from Environment.database import Base
 from pydantic import BaseModel, Field
 from sqlalchemy import Column, Integer, String, DateTime, func
@@ -23,4 +22,4 @@ class RequestWithIDAndDate(RequestBase):
     date: datetime.datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
