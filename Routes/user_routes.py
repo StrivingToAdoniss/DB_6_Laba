@@ -1,4 +1,4 @@
-from Models import User
+from Models import User, Role
 from fastapi import HTTPException, status
 from Environment.dependencies import dependency
 from fastapi import APIRouter
@@ -10,6 +10,14 @@ router = APIRouter()
 @router.post("/user/", status_code=status.HTTP_201_CREATED, response_model=User.UserBase)
 async def create_user(user: User.UserBase, db: dependency):
     db_user = User.User(**user.dict())
+
+    role_id = user.role_id  # Replace with the actual field name in your Request model
+    role = db.query(Role.Role).filter(Role.Role.id == role_id).first()
+
+    if role is None:
+        # Raise an exception if the user does not exist
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
+
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -26,6 +34,13 @@ async def update_user(user_id: int, user: User.UserBase, db: dependency):
     for var, value in vars(user).items():
         setattr(db_user, var, value) if value else None
 
+    role_id = user.role_id  # Replace with the actual field name in your Request model
+    role = db.query(Role.Role).filter(Role.Role.id == role_id).first()
+
+    if role is None:
+        # Raise an exception if the user does not exist
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
+
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -33,7 +48,7 @@ async def update_user(user_id: int, user: User.UserBase, db: dependency):
     return db_user
 
 
-# GET endpoint to retrieve all roles
+# GET endpoint to retrieve all users
 @router.get("/user/", status_code=status.HTTP_200_OK, response_model=List[User.UserWithID])
 async def read_all_users(db: dependency):
     users = db.query(User.User).all()
