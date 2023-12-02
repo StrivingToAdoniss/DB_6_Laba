@@ -42,7 +42,7 @@ async def read_request(request_id: int, db: dependency):
 
 
 @router.delete("/request/{request_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def read_request(request_id: int, db: dependency):
+async def delete_request(request_id: int, db: dependency):
     request = db.query(Request.Request).filter(Request.Request.id == request_id).first()
 
     if request is None:
