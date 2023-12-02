@@ -7,7 +7,7 @@ from typing import List
 router = APIRouter()
 
 
-@router.post("/request/", status_code=status.HTTP_201_CREATED, response_model=Request.RequestBase)
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=Request.RequestBase)
 async def create_request(request: Request.RequestBase, db: dependency):
     db_request = Request.Request(**request.dict())
 
@@ -24,7 +24,7 @@ async def create_request(request: Request.RequestBase, db: dependency):
     return db_request
 
 # GET endpoint to retrieve all requests
-@router.get("/request/", status_code=status.HTTP_200_OK, response_model=List[Request.RequestWithIDAndDate])
+@router.get("", status_code=status.HTTP_200_OK, response_model=List[Request.RequestWithIDAndDate])
 async def read_all_requests(db: dependency):
     requests = db.query(Request.Request).all()
     if not requests:
@@ -32,7 +32,7 @@ async def read_all_requests(db: dependency):
     return requests
 
 
-@router.get("/request/{request_id}", status_code=status.HTTP_200_OK, response_model=Request.RequestWithIDAndDate)
+@router.get("{request_id}", status_code=status.HTTP_200_OK, response_model=Request.RequestWithIDAndDate)
 async def read_request(request_id: int, db: dependency):
     request = db.query(Request.Request).filter(Request.Request.id == request_id).first()
 
@@ -41,7 +41,7 @@ async def read_request(request_id: int, db: dependency):
     return request
 
 
-@router.delete("/request/{request_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("{request_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_request(request_id: int, db: dependency):
     request = db.query(Request.Request).filter(Request.Request.id == request_id).first()
 

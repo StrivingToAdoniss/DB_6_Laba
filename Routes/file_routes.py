@@ -7,7 +7,7 @@ from typing import List
 router = APIRouter()
 
 
-@router.post("/file/", status_code=status.HTTP_201_CREATED, response_model=File.FileBase)
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=File.FileBase)
 async def create_file(file: File.FileBase, db: dependency):
     db_file = File.File(**file.dict())
 
@@ -19,7 +19,7 @@ async def create_file(file: File.FileBase, db: dependency):
 
 from fastapi import HTTPException
 
-@router.put("/file/{file_id}", status_code=status.HTTP_200_OK, response_model=File.FileBase)
+@router.put("{file_id}", status_code=status.HTTP_200_OK, response_model=File.FileBase)
 async def update_file(file_id: int, file: File.FileBase, db: dependency):
     db_file = db.query(File.File).filter(File.File.id == file_id).first()
 
@@ -36,7 +36,7 @@ async def update_file(file_id: int, file: File.FileBase, db: dependency):
     return db_file
 
 
-@router.get("/file/", status_code=status.HTTP_200_OK, response_model=List[File.FileWithIDAndDate])
+@router.get("", status_code=status.HTTP_200_OK, response_model=List[File.FileWithIDAndDate])
 async def read_all_files(db: dependency):
     files = db.query(File.File).all()
     if not files:
@@ -44,7 +44,7 @@ async def read_all_files(db: dependency):
     return files
 
 
-@router.get("/file/{file_id}", status_code=status.HTTP_200_OK, response_model=File.FileWithIDAndDate)
+@router.get("{file_id}", status_code=status.HTTP_200_OK, response_model=File.FileWithIDAndDate)
 async def read_file(file_id: int, db: dependency):
     file = db.query(File.File).filter(File.File.id == file_id).first()
 
@@ -53,7 +53,7 @@ async def read_file(file_id: int, db: dependency):
     return file
 
 
-@router.delete("/file/{file_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("{file_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_file(file_id: int, db: dependency):
     file = db.query(File.File).filter(File.File.id == file_id).first()
 

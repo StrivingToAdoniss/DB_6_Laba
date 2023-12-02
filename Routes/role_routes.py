@@ -6,7 +6,7 @@ from typing import List
 
 router = APIRouter()
 
-@router.post("/roles/", status_code=status.HTTP_201_CREATED, response_model=Role.RoleBase)
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=Role.RoleBase)
 async def create_role(role: Role.RoleBase, db: dependency):
     db_role = Role.Role(**role.dict())
     db.add(db_role)
@@ -14,7 +14,7 @@ async def create_role(role: Role.RoleBase, db: dependency):
     db.refresh(db_role)
     return db_role
 
-@router.put("/roles/{role_id}", status_code=status.HTTP_200_OK, response_model=Role.RoleBase)
+@router.put("{role_id}", status_code=status.HTTP_200_OK, response_model=Role.RoleBase)
 async def update_role(role_id: int, role: Role.RoleBase, db: dependency):
     db_role = db.query(Role.Role).filter(Role.Role.id == role_id).first()
 
@@ -31,14 +31,14 @@ async def update_role(role_id: int, role: Role.RoleBase, db: dependency):
     return db_role
 
 # GET endpoint to retrieve all roles
-@router.get("/roles/", status_code=status.HTTP_200_OK, response_model=List[Role.RoleWithID])
+@router.get("", status_code=status.HTTP_200_OK, response_model=List[Role.RoleWithID])
 async def read_all_roles(db: dependency):
     roles = db.query(Role.Role).all()
     if not roles:
         raise HTTPException(status_code=404, detail="No roles found")
     return roles
 
-@router.get("/roles/{role_id}", status_code=status.HTTP_200_OK, response_model=Role.RoleWithID)
+@router.get("{role_id}", status_code=status.HTTP_200_OK, response_model=Role.RoleWithID)
 async def read_role(role_id: int, db: dependency):
     role = db.query(Role.Role).filter(Role.Role.id == role_id).first()
     if role is None:
@@ -47,7 +47,7 @@ async def read_role(role_id: int, db: dependency):
 
 
 # DELETE endpoint to remove a role by id
-@router.delete("/roles/{role_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("{role_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_role(role_id: int, db: dependency):
     role = db.query(Role.Role).filter(Role.Role.id == role_id).first()
 
